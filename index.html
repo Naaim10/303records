@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="303Records, label indépendant suisse basé à Lausanne : artistes, DJs et beatmakers. Dernières sorties, events, memories et contact.">
+<meta property="og:title" content="303Records · Swiss independent label">
+<meta property="og:description" content="Label indépendant suisse : artistes, DJs et beatmakers.">
+<meta property="og:image" content="media/hero-poster.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="media/logo-303.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>303Records</title>
+
+<meta name="theme-color" content="#0a0a0a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@1&display=swap">
+<style>
+/* Layout : landing sombre une page — loader, hero vidéo, roster en bento, sorties en pilules, archives en parallaxe, chiffres, contact vidéo. */
+:root{
+  --bg:hsl(0 0% 4%);
+  --surface:hsl(0 0% 8%);
+  --text:hsl(0 0% 96%);
+  --muted:hsl(0 0% 53%);
+  --stroke:hsl(0 0% 12%);
+  --a1:#89AACC;--a2:#4E85BF;
+  --grad:linear-gradient(90deg,var(--a1) 0%,var(--a2) 100%);
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --font-display:'Instrument Serif',Georgia,'Times New Roman',serif;
+  --orig-body:'Inter',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
+  --orig-display:'Instrument Serif',Georgia,'Times New Roman',serif;
+  --ease:cubic-bezier(.25,.1,.25,1);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.is-loading{overflow:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--a1);outline-offset:3px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.serif{font-family:var(--font-display);font-style:italic;font-weight:400}
+.wrap{max-width:1200px;margin-inline:auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+@media(min-width:768px){.wrap{padding-left:max(40px,env(safe-area-inset-left,0px));padding-right:max(40px,env(safe-area-inset-right,0px))}}
+@media(min-width:1024px){.wrap{padding-left:64px;padding-right:64px}}
+.eyebrow{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.3em}
+.accent-gradient{background:var(--grad)}
+
+@keyframes scroll-down{0%{transform:translateY(-100%)}100%{transform:translateY(200%)}}
+@keyframes role-fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes gradient-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes mq{to{transform:translateX(-50%)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.6)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+
+/* bordure dégradée au survol (anneau) */
+.ring{position:relative;isolation:isolate}
+.ring::before{content:"";position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:var(--grad);background-size:200% 100%;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:0;transition:opacity .3s;pointer-events:none;animation:gradient-shift 6s ease infinite}
+.ring:hover::before,.ring:focus-visible::before{opacity:1}
+
+/* ---------- LOADER ---------- */
+.loader{position:fixed;inset:0;z-index:9999;background:var(--bg);transition:opacity .6s var(--ease),visibility .6s}
+.loader.done{opacity:0;visibility:hidden}
+.loader-top{position:absolute;top:max(32px,env(safe-area-inset-top,0px));left:max(24px,env(safe-area-inset-left,0px))}
+.loader-mid{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden}
+.loader-word{font-family:var(--font-display);font-style:italic;font-size:clamp(2.25rem,7vw,4.5rem);color:rgba(245,245,245,.8);transition:opacity .35s var(--ease),transform .35s var(--ease)}
+.loader-count>span{transition:opacity .45s var(--ease),filter .45s var(--ease)}
+.loader-logo{position:absolute;left:50%;top:50%;height:.85em;width:auto;opacity:0;filter:blur(8px);transform:translate(-50%,-50%) scale(.94);transition:opacity .6s var(--ease) .05s,filter .6s var(--ease) .05s,transform .8s var(--ease);pointer-events:none}
+.loader.logo-in .loader-count>span{opacity:0;filter:blur(8px)}
+.loader.logo-in .loader-logo{opacity:1;filter:none;transform:translate(-50%,-50%)}
+.loader-word.out{opacity:0;transform:translateY(-20px)}
+.loader-word.in{opacity:0;transform:translateY(20px)}
+.loader-count{position:absolute;right:max(24px,env(safe-area-inset-right,0px));bottom:calc(32px + env(safe-area-inset-bottom,0px));font-family:var(--font-display);font-size:clamp(3.75rem,12vw,8rem);line-height:1;font-variant-numeric:tabular-nums}
+.loader-count .pct{font-size:.5em;vertical-align:top;margin-left:.08em;color:rgba(245,245,245,.7)}
+.loader-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(31,31,31,.5)}
+.loader-bar i{position:absolute;inset:0;background:var(--grad);transform-origin:0 50%;transform:scaleX(0);box-shadow:0 0 8px rgba(137,170,204,.35)}
+
+/* ---------- NAV ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 0;pointer-events:none}
+@media(min-width:768px){.nav{padding-top:calc(24px + env(safe-area-inset-top,0px))}}
+.nav{transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .35s}
+.nav.nav-hide{transform:translateY(-120%);opacity:0}
+.pill{pointer-events:auto;display:inline-flex;align-items:center;border-radius:999px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);background:rgba(20,20,20,.85);padding:8px;transition:box-shadow .3s}
+.pill.scrolled{box-shadow:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1)}
+.logo{position:relative;width:36px;height:36px;border-radius:50%;padding:1.5px;background:var(--grad);transition:transform .3s,background .3s;flex:none}
+.logo:hover{transform:scale(1.1);background:linear-gradient(270deg,var(--a1),var(--a2))}
+.logo span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--bg)}
+.logo img{height:22px;width:auto}
+.div{width:1px;height:20px;background:var(--stroke);margin-inline:4px;display:none}
+@media(min-width:640px){.div{display:block}}
+.nav-link{font-size:12px;border-radius:999px;padding:6px 12px;color:var(--muted);transition:color .2s,background .2s;white-space:nowrap}
+@media(min-width:640px){.nav-link{font-size:14px;padding:8px 16px}}
+.nav-link:hover{color:var(--text);background:rgba(31,31,31,.5)}
+.nav-link.active{color:var(--text);background:rgba(31,31,31,.5)}
+.hi{border-radius:999px;font-size:12px;margin-left:2px}
+.hi span{display:block;border-radius:999px;background:var(--surface);padding:6px 12px;white-space:nowrap}
+@media(min-width:640px){.hi{font-size:14px}.hi span{padding:8px 16px}}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden;text-align:center}
+.bgvid{position:absolute;left:50%;top:50%;min-width:100%;min-height:100%;width:auto;height:auto;object-fit:cover;transform:translate(-50%,-50%);max-width:none}
+.ov{position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 52%,rgba(0,0,0,.62),rgba(0,0,0,.3) 75%)}
+.hero .eyebrow,.hero .desc{color:rgba(245,245,245,.78);text-shadow:0 1px 14px rgba(0,0,0,.8)}
+.hero .name,.role-line{text-shadow:0 2px 24px rgba(0,0,0,.45)}
+.fade{position:absolute;left:0;right:0;bottom:0;height:12rem;background:linear-gradient(to top,var(--bg),transparent)}
+.hero-in{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;padding:120px max(24px,env(safe-area-inset-left,0px)) 140px}
+.hero .eyebrow{margin-bottom:28px;font-size:13px}
+.name{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(3.4rem,13vw,8rem);line-height:.9;letter-spacing:-.025em;margin:0 0 24px}
+.role-line{font-size:clamp(1.05rem,2.2vw,1.35rem);color:rgba(245,245,245,.85);margin:0 0 16px}
+.role-line b{font-family:var(--font-display);font-style:italic;font-weight:400;font-size:1.25em;color:var(--text);display:inline-block;animation:role-fade-in .4s ease-out}
+.desc{font-size:clamp(.875rem,1.4vw,1rem);color:var(--muted);max-width:min(46rem,100%);margin:0 0 48px;text-wrap:balance}
+.ctas{display:inline-flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.btn{border-radius:999px;font-size:14px;padding:14px 28px;transition:transform .3s,background .3s,color .3s,border-color .3s;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.btn:hover{transform:scale(1.05)}
+.btn-solid{background:var(--text);color:var(--bg);border:2px solid transparent}
+.btn-solid:hover{background:var(--bg);color:var(--text)}
+.btn-line{border:2px solid var(--stroke);background:var(--bg);color:var(--text)}
+.btn-line:hover{border-color:transparent}
+.scroll{position:absolute;bottom:calc(32px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:12px}
+.scroll small{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.2em}
+.scroll i{position:relative;width:1px;height:40px;background:var(--stroke);overflow:hidden}
+.scroll i::after{content:"";position:absolute;inset:0;background:var(--text);animation:scroll-down 1.5s ease-in-out infinite}
+
+/* ---------- EN-TÊTES DE SECTION ---------- */
+.sec{background:var(--bg)}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:40px}
+.kicker{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.kicker::before{content:"";width:32px;height:1px;background:var(--stroke)}
+.h2{font-size:clamp(2.2rem,5vw,3.75rem);font-weight:400;line-height:1.05;letter-spacing:-.02em;margin:0 0 12px;text-wrap:balance}
+.h2 em{font-family:var(--font-display);font-style:italic}
+.sub{color:var(--muted);margin:0;max-width:30rem}
+.more{display:none;border-radius:999px;border:1px solid var(--stroke);padding:12px 22px;font-size:14px;align-items:center;gap:8px;white-space:nowrap;transition:transform .3s}
+.more:hover{transform:translateX(2px)}
+@media(min-width:768px){.more{display:inline-flex}}
+.reveal{transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.js .reveal:not(.on){opacity:0;transform:translateY(30px)}
+
+/* ---------- ROSTER (bento) ---------- */
+#artistes{padding-block:48px}
+@media(min-width:768px){#artistes{padding-block:64px}}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+#artistes .head{flex-wrap:wrap}
+@media(max-width:767px){#artistes .head{flex-direction:column;align-items:flex-start}}
+.rtab{min-height:42px;padding:0 18px;border:1px solid var(--stroke);border-radius:999px;background:transparent;cursor:pointer;font-size:13px;color:var(--muted);transition:background .2s,color .2s,border-color .2s;touch-action:manipulation}
+.rtab:hover{color:var(--text);border-color:#2a2a2a}
+.rtab[aria-pressed=true]{background:var(--text);color:var(--bg);border-color:var(--text)}
+#artistes .wrap{display:block}
+.rtools{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 40px}
+.rnd{min-height:42px;padding:0 18px;border-radius:999px;border:0;cursor:pointer;font-size:13px;background:var(--grad);color:#0a0a0a;font-weight:500;transition:transform .2s;touch-action:manipulation}
+.rnd:hover{transform:translateY(-2px)}
+.racc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"a d" "a b";grid-template-rows:auto 1fr;column-gap:clamp(28px,4vw,56px);align-items:start}
+.rgrp{min-width:0}
+.rgrp[data-g="Artistes"]{grid-area:a}.rgrp[data-g="DJs"]{grid-area:d}.rgrp[data-g="Beatmakers"]{grid-area:b;margin-top:48px}
+.rgrp[data-g="DJs"],.rgrp[data-g="Beatmakers"]{border-left:1px solid var(--stroke);padding-left:clamp(28px,4vw,56px);margin-left:calc(-1*clamp(28px,4vw,56px)/2)}
+.rgrp h3{margin:0 0 12px;font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--text);display:flex;gap:10px}
+.rgrp h3 i{font-style:normal;color:var(--a1)}
+.ritem{border-top:1px solid rgba(245,245,245,.6)}
+.ritem:last-child{border-bottom:1px solid rgba(245,245,245,.6)}
+.rhead{display:flex;align-items:center;gap:16px;width:100%;padding:14px 0;border:0;background:none;cursor:pointer;text-align:left;touch-action:manipulation}
+.rhead b{flex:1;min-width:0;font-family:var(--font-body);font-weight:800;font-size:clamp(1.6rem,3vw,2.4rem);line-height:1.05;letter-spacing:.01em;text-transform:uppercase;overflow-wrap:anywhere;transition:color .2s,transform .3s var(--ease)}
+.rhead:hover b{color:var(--a1);transform:translateX(8px)}
+.rhead em{font-style:normal;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.rplus{width:22px;height:22px;position:relative;flex:none}
+.rplus::before,.rplus::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:2px;background:var(--text);transform:translate(-50%,-50%);transition:transform .25s}
+.rplus::after{transform:translate(-50%,-50%) rotate(90deg)}
+.ritem.open .rplus::after{transform:translate(-50%,-50%) rotate(0)}
+.rbody{overflow:hidden;height:0;transition:height .4s var(--ease)}
+.ritem.open .rbody{height:auto}
+.rin{display:flow-root;padding:6px 0 28px}
+.rin>.rbio{margin-bottom:20px}
+.rin>.rrel,.rin>.lk{clear:both}
+.rin>.rrel{margin-bottom:20px}
+.rph{float:left;width:clamp(110px,12vw,150px);aspect-ratio:9/16;margin:4px 22px 12px 0;shape-outside:inset(0 round 14px);border-radius:16px;overflow:hidden;border:1px solid var(--stroke);background:repeating-linear-gradient(135deg,#141418 0 12px,#1c1c22 12px 24px);display:flex;align-items:flex-end;padding:12px;position:relative}
+.rph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.rph span{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.rbio{display:block;color:rgba(245,245,245,.85);font-size:15.5px}
+.rbio p{margin:0}
+.rbio p+p{margin-top:12px}
+.rrel{display:block;align-items:center;border-block:1px solid var(--stroke);padding:12px 0}
+.rrel .disc{width:70px;height:70px;animation-play-state:running}
+.cdcase{position:relative;width:100%;aspect-ratio:1;border-radius:3px;overflow:hidden;background:#151515;box-shadow:0 8px 20px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.14)}
+.cdcase img{position:absolute;top:0;bottom:0;left:9%;width:91%;height:100%;object-fit:cover;object-position:center 28%}
+.cdcase::before{content:"";position:absolute;left:0;top:0;bottom:0;width:9%;z-index:1;background:linear-gradient(90deg,#2a2a2a,#0f0f0f 60%,#3a3a3a);box-shadow:inset -1px 0 0 rgba(255,255,255,.18),inset -2px 0 0 rgba(0,0,0,.6)}
+.cdcase::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(125deg,rgba(255,255,255,.28) 0%,rgba(255,255,255,.08) 28%,transparent 42%,transparent 70%,rgba(255,255,255,.06) 100%)}
+.rrel .meta{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.rrel strong{display:block;font-weight:800;text-transform:uppercase;font-size:clamp(.9rem,1.3vw,1.05rem);line-height:1.15;margin:4px 0 8px}
+.rrel .place{display:block;font-size:11px;color:var(--muted);margin:-4px 0 8px}
+.rrel .pbtn.solid{min-height:32px;padding:0 12px;font-size:12px}
+.pbtn{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border:1px solid var(--stroke);border-radius:999px;font-size:13px;background:transparent;cursor:pointer;transition:background .2s,color .2s,border-color .2s;touch-action:manipulation}
+.pbtn:hover{background:var(--text);color:var(--bg);border-color:var(--text)}
+.pbtn.solid{background:var(--grad);color:#0a0a0a;border-color:transparent;font-weight:500}
+.pbtn.solid:hover{background:var(--text)}
+.pbtn.solid.spotify{background:#1DB954;color:#000;border-color:#1DB954;font-weight:600}
+.pbtn.solid.spotify:hover{background:#1ed760;border-color:#1ed760}
+.pbtn.dis{opacity:.45;cursor:not-allowed}.pbtn.dis:hover{background:transparent;color:inherit;border-color:var(--stroke)}
+.lk{display:flex;gap:8px;flex-wrap:wrap}
+.rgrp.hid{display:none}
+.racc.one{grid-template-columns:minmax(0,1fr);grid-template-areas:"a" "d" "b"}
+.racc.one .rgrp{border-left:0;padding-left:0;margin-left:0;margin-top:0}
+@media(max-width:820px){
+  .racc{grid-template-columns:minmax(0,1fr);grid-template-areas:"a" "d" "b";row-gap:40px}
+  .rgrp[data-g="DJs"],.rgrp[data-g="Beatmakers"]{border-left:0;padding-left:0;margin-left:0;margin-top:0}
+  .rrel{grid-template-columns:60px minmax(0,1fr)}.rrel .disc{width:60px;height:60px}
+}
+@media (prefers-reduced-motion:reduce){.rbody{transition:none}}
+
+/* ---------- SORTIES ---------- */
+#sorties{padding-block:64px}
+@media(min-width:768px){#sorties{padding-block:96px}}
+.list{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;align-items:center;gap:24px;padding:16px;background:rgba(20,20,20,.3);border:1px solid var(--stroke);border-radius:40px;transition:background .3s,border-color .3s}
+@media(min-width:640px){.row{border-radius:999px}}
+.row:hover{background:var(--surface);border-color:#2a2a2a}
+.disc{flex:none;width:64px;height:64px;border-radius:50%;position:relative;background:radial-gradient(circle,var(--a2) 0 15%,#0a0a0a 15.5% 17%,transparent 17.5%),repeating-radial-gradient(circle,#151515 0 2px,#202020 2px 4px);animation:spin 6s linear infinite;animation-play-state:paused;box-shadow:0 0 0 1px var(--stroke)}
+.disc::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 30deg,transparent 0 40%,rgba(255,255,255,.12) 45%,transparent 50% 90%,rgba(255,255,255,.08) 95%,transparent)}
+.row:hover .disc{animation-play-state:running}
+.row-t{flex:1;min-width:0}
+.row-t b{display:block;font-weight:500;font-size:clamp(1rem,2vw,1.25rem);overflow-wrap:anywhere}
+.row-t b em{font-family:var(--font-display);font-weight:400}
+.row-t small{color:var(--muted);font-size:13px}
+.meta{display:none;color:var(--muted);font-size:13px;gap:20px;white-space:nowrap}
+@media(min-width:768px){.meta{display:flex}}
+.arrow{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--stroke);display:grid;place-items:center;transition:transform .3s,background .3s,color .3s}
+.row:hover .arrow{transform:rotate(-45deg);background:var(--text);color:var(--bg)}
+
+/* ---------- ARCHIVES (parallaxe) ---------- */
+#archives{padding-block:72px 96px}
+@media(min-width:768px){#archives{padding-block:96px 120px}}
+.archive__head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:28px}
+.archive__head .h2{margin:0}
+.h2,.h2.caps{font-weight:700;letter-spacing:-.01em;text-transform:uppercase}
+.h2 em{font-family:inherit;font-style:normal}
+.pinfo strong{font-family:var(--font-body)!important;font-style:normal!important;font-weight:700!important;text-transform:uppercase;letter-spacing:-.01em}
+.ditem b,.ev b{text-transform:uppercase}
+.archive__count{font-size:14px;color:var(--muted);white-space:nowrap}
+.archive__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+@media(min-width:1024px){.archive__grid{grid-template-columns:repeat(10,minmax(0,1fr))}}
+.archive__grid .thumb.more-hid{display:none}
+.amore{display:flex;justify-content:center;gap:10px;margin-top:20px}
+.amore[hidden]{display:none}
+.thumb{display:block;width:100%;aspect-ratio:1;margin:0;border:0;padding:0;background:#151515;border-radius:8px;overflow:hidden;cursor:zoom-in;position:relative;max-width:100%}
+.thumb img,.thumb video{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.thumb:hover img,.thumb:hover video{transform:scale(1.035)}
+.thumb--video::after{content:"";position:absolute;right:12px;bottom:12px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.85) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l9 5-9 5z' fill='%23151515'/%3E%3C/svg%3E") center/16px no-repeat;box-shadow:0 2px 10px rgba(0,0,0,.3)}
+.thumb:focus-visible{outline:2px solid var(--a1);outline-offset:3px}
+body.viewer-open{overflow:hidden}
+.viewer{position:fixed;inset:0;z-index:1000;background:#0a0a0a;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:pan-y;cursor:grab;--glow:120,130,160;opacity:0;transition:opacity .35s ease}
+.viewer.is-open{opacity:1}
+.viewer.is-dragging{cursor:grabbing}
+.viewer .stage{position:absolute;inset:0;perspective-origin:50% 50%}
+.vcard{position:absolute;top:50%;left:50%;margin:0;border-radius:14px;overflow:hidden;background:#1a1a1a;backface-visibility:visible;will-change:transform,opacity;isolation:isolate;box-shadow:0 30px 60px -30px rgba(0,0,0,.7)}
+.vcard img,.vcard video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.vcard__cap{position:absolute;left:0;right:0;bottom:0;padding:40px 18px 16px;font-size:13px;letter-spacing:.22em;color:rgba(255,255,255,.92);font-variant-numeric:tabular-nums;background:linear-gradient(180deg,transparent,rgba(0,0,0,.5));pointer-events:none}
+.vcard__cap:empty{display:none}
+.glow{position:absolute;left:50%;width:max(27.5vw,150px);height:max(5vh,30px);border-radius:50%;pointer-events:none;background:radial-gradient(ellipse at center,rgba(var(--glow),.9) 0%,rgba(var(--glow),.5) 38%,rgba(var(--glow),0) 70%);filter:blur(7px) saturate(1.15)}
+.glow::after{content:"";position:absolute;inset:-40% -22%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(137,170,204,.35) 0%,rgba(137,170,204,0) 68%)}
+.glow--top{top:0;transform:translate(-50%,-42%)}
+.glow--bottom{bottom:0;transform:translate(-50%,42%)}
+.lens{position:absolute;top:0;bottom:0;width:15%;pointer-events:none;z-index:20;-webkit-backdrop-filter:blur(16px) saturate(1.35);backdrop-filter:blur(16px) saturate(1.35)}
+.lens--l{left:0;-webkit-mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%);mask-image:linear-gradient(90deg,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%)}
+.lens--r{right:0;-webkit-mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%);mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.55) 45%,transparent 100%)}
+.vbtn{position:absolute;z-index:30;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.12);cursor:pointer;background:rgba(30,30,30,.72);color:var(--text);display:grid;place-items:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:background .2s,transform .2s}
+.vbtn:hover{background:rgba(50,50,50,.9);transform:scale(1.06)}
+.vbtn:focus-visible{outline:2px solid var(--a1);outline-offset:2px}
+.vbtn svg{width:18px;height:18px}
+.vclose{top:calc(18px + env(safe-area-inset-top,0px));right:max(18px,env(safe-area-inset-right,0px))}
+.vprev{left:max(22px,env(safe-area-inset-left,0px));top:50%;margin-top:-22px}
+.vnext{right:max(22px,env(safe-area-inset-right,0px));top:50%;margin-top:-22px}
+.vcounter{position:absolute;z-index:30;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:14px;letter-spacing:.02em;color:var(--muted);font-variant-numeric:tabular-nums}
+@media (max-width:720px){
+  .lens{width:12%;-webkit-backdrop-filter:blur(10px) saturate(1.3);backdrop-filter:blur(10px) saturate(1.3)}
+  .glow{width:56vw;height:34px}
+  .vprev,.vnext{display:none}
+  .archive__grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  .thumb{border-radius:6px!important}
+}
+@media (prefers-reduced-motion:reduce){.viewer{transition:none}.thumb img{transition:none}}
+
+/* ---------- CHIFFRES ---------- */
+#drop{padding-block:72px 32px}#events{padding-block:48px 32px}
+@media(min-width:768px){#drop{padding-block:96px 48px}#events{padding-block:64px 48px}}
+.drop{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px;align-items:start}
+@media(max-width:900px){.drop{grid-template-columns:minmax(0,1fr)}}
+.player{display:grid;gap:14px;min-width:0}
+.vid{position:relative;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid var(--stroke);background:#000;max-width:100%}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.vid .vph{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;background:radial-gradient(ellipse at center,rgba(78,133,191,.18),transparent 70%)}
+.vid .vph p{margin:12px 0 0;font-size:13px;color:var(--muted)}
+.vplay{width:72px;height:72px;border-radius:50%;border:0;background:var(--grad);display:grid;place-items:center;cursor:pointer;margin:0 auto;transition:transform .25s;box-shadow:0 10px 30px rgba(78,133,191,.35)}
+.vplay:hover{transform:scale(1.08)}
+.vplay svg{width:26px;height:26px;margin-left:4px}
+.pinfo{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.pinfo small{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.pinfo strong{display:block;font-family:var(--font-display);font-style:italic;font-weight:400;font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.05;margin-top:4px}
+.pinfo .acts{display:flex;gap:8px;flex-wrap:wrap}
+.dlist{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ditem{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:8px;border-radius:14px;border:1px solid var(--stroke);background:rgba(20,20,20,.4);cursor:pointer;transition:background .25s,border-color .25s;touch-action:manipulation}
+.ditem:hover{background:var(--surface)}
+.ditem[aria-current=true]{border-color:var(--a2);background:var(--surface)}
+.ditem .thumb16{position:relative;flex:none!important;width:clamp(120px,11vw,150px);aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:#151515}
+.ditem .thumb16 img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s var(--ease)}
+.ditem:hover .thumb16 img{transform:scale(1.05)}
+.ditem .thumb16 em{position:absolute;right:4px;bottom:4px;font-style:normal;font-size:10px;font-weight:600;letter-spacing:.04em;padding:2px 5px;border-radius:4px;background:rgba(0,0,0,.8);color:#fff}
+.ditem .thumb16::after{content:"";position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:rgba(0,0,0,.55) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l9 5-9 5z' fill='white'/%3E%3C/svg%3E") center/14px no-repeat;opacity:0;transition:opacity .25s}
+.ditem:hover .thumb16::after,.ditem[aria-current=true] .thumb16::after{opacity:1}
+.ditem span{flex:1;min-width:0}
+.ditem b{display:block;font-weight:500;font-size:15px;overflow-wrap:anywhere}
+.ditem small{font-size:12px;color:var(--muted)}
+.ditem i{font-style:normal;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-right:10px;white-space:nowrap}
+.evlist{display:flex;flex-direction:column;border-top:1px solid var(--stroke)}
+.ev{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 0;border-bottom:1px solid var(--stroke)}
+.ev .d{font-family:var(--font-display);font-style:italic;font-size:2.4rem;line-height:1}
+.ev .d small{display:block;font-family:var(--font-body);font-style:normal;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.ev b{display:block;font-weight:600;font-size:clamp(1.05rem,2vw,1.35rem)}
+.ev span{font-size:14px;color:var(--muted)}
+.ev .tag{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;border:1px dashed #444;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);vertical-align:middle}
+.ev-empty{padding:32px 0;color:var(--muted);border-bottom:1px solid var(--stroke)}
+@media(max-width:640px){.ev{grid-template-columns:76px minmax(0,1fr)}.ev .pbtn{grid-column:2;justify-self:start}.ev .d{font-size:1.9rem}}
+#chiffres{padding-block:64px}
+@media(min-width:768px){#chiffres{padding-block:96px}}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--stroke)}
+@media(min-width:900px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.stat{padding:28px 0 28px 20px;border-bottom:1px solid var(--stroke);border-left:1px solid var(--stroke)}
+.stat:nth-child(odd){border-left:0;padding-left:0}
+@media(min-width:900px){.stat{padding:40px 32px;border-bottom:0;border-left:1px solid var(--stroke)}.stat:nth-child(odd){border-left:1px solid var(--stroke);padding-left:32px}.stat:first-child{border-left:0;padding-left:0}}
+.stat b{display:block;font-family:var(--font-display);font-weight:400;font-size:clamp(4rem,9vw,7rem);line-height:1;font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:12px;color:var(--muted);font-size:14px}
+
+/* ---------- CONTACT ---------- */
+#contact{position:relative;background:#000;padding-top:72px;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+@media(min-width:768px){#contact{padding-top:96px;padding-bottom:48px}}
+.cta-b{text-align:center;display:flex;flex-direction:column;align-items:center;gap:32px;padding-bottom:80px}
+.cta-b .h2{margin:0}
+.cform{width:100%;max-width:720px;display:flex;flex-direction:column;gap:16px;text-align:left}
+.frow{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+@media(min-width:640px){.frow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.fld{display:flex;flex-direction:column;gap:8px;min-width:0}
+.fld span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.18em}
+.fld input,.fld select,.fld textarea{width:100%;font:inherit;font-size:16px;color:var(--text);background:#0d0d0d;border:1px solid #222;border-radius:16px;padding:14px 18px;outline:none;transition:border-color .2s}
+.fld select{appearance:none;-webkit-appearance:none;cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 22px) 52%,calc(100% - 16px) 52%;background-size:6px 6px;background-repeat:no-repeat}
+.fld select option{background:#0d0d0d;color:var(--text)}
+.fld textarea{resize:vertical;min-height:120px;border-radius:20px}
+.fld input::placeholder,.fld textarea::placeholder{color:#555}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--a2)}
+.fld.err input,.fld.err select,.fld.err textarea{border-color:#c0504d}
+.factions{display:flex;gap:12px;flex-wrap:wrap;margin-top:4px}
+.fstatus{margin:0;min-height:1.4em;font-size:14px;color:var(--a1)}
+.fnote{margin:0;font-size:14px;color:var(--muted)}
+.addr-inline{color:var(--text);user-select:all}
+.fnote .ig{color:var(--text);text-decoration:underline;text-underline-offset:3px}
+.fnote .ig:hover{color:var(--a1)}
+.frow.one{grid-template-columns:minmax(0,1fr)!important}
+.fstatus.ok{color:#22c55e}.fstatus.ko{color:#e0605c}
+#fSend[disabled]{opacity:.6;cursor:wait}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.1);padding-top:28px;font-size:14px}
+.soc{display:flex;flex-wrap:wrap;gap:6px 20px}
+.soc a,.soc span{color:var(--muted);transition:color .2s}
+.soc a:hover{color:var(--text)}
+.soc span{opacity:.55;cursor:not-allowed}
+.avail{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.avail i{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
+.copyright{width:100%;color:#555;font-size:12px}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+  .js .reveal:not(.on){opacity:1;transform:none}
+}
+@font-face{font-family:'Oktah';src:url(media/oktah-neue-medium.otf) format('opentype');font-weight:100 900;font-style:normal;font-display:block}
+@font-face{font-family:'Oktah';src:url(media/oktah-neue-medium.otf) format('opentype');font-weight:100 900;font-style:italic;font-display:block}
+/* Typo retenue : proposition 11, Oktah Neue Medium (le menu et la liste des artistes gardent la typo d'origine) */
+:root{--font-body:'Oktah',var(--orig-body);--font-display:'Oktah',var(--orig-body)}
+.nav,.roster{--font-body:var(--orig-body);--font-display:var(--orig-display);font-family:var(--font-body)}
+</style>
+
+<!-- LOADER -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-top eyebrow" id="lTop">303Records</div>
+  <div class="loader-mid"><div class="loader-word" id="lWord">Swiss</div></div>
+  <div class="loader-count"><span id="lCount">000</span><span class="pct">%</span><img class="loader-logo" id="lLogo" src="media/logo-303.png" alt="" aria-hidden="true"></div>
+  <div class="loader-bar"><i id="lBar"></i></div>
+</div>
+
+<!-- NAV -->
+<header class="nav">
+  <nav class="pill" id="pill" aria-label="Navigation principale">
+    <a class="logo" href="#top" aria-label="303Records, accueil"><span><img src="media/logo-303.png" alt="" width="14" height="22"></span></a>
+    <i class="div"></i>
+    <a class="nav-link active" href="#top" data-s="top">Accueil</a>
+    <a class="nav-link" href="#artistes" data-s="artistes">Artistes</a>
+    <a class="nav-link" href="#archives" data-s="archives">Memories</a>
+    <i class="div"></i>
+    <a class="hi ring" href="#contact"><span>Contact ↗</span></a>
+  </nav>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero" id="top">
+  <video class="bgvid" id="heroVid" muted loop playsinline preload="auto" poster="media/hero-poster.jpg" aria-hidden="true" disablepictureinpicture>
+    <source src="media/hero-drapeau.mp4" type="video/mp4">
+  </video>
+  <div class="ov"></div><div class="fade"></div>
+  <div class="hero-in">
+    <p class="eyebrow blur-in">Swiss independent label</p>
+    <h1 class="sr-only">303Records</h1>
+    <div class="ctas blur-in">
+      <a class="btn btn-solid ring" id="merchBtn" href="#" target="_blank" rel="noopener" aria-disabled="true" title="Lien de la boutique à renseigner">Merch <span aria-hidden="true">↗</span></a>
+      <a class="btn btn-line ring" href="#contact">Nous écrire…</a>
+    </div>
+  </div>
+</section>
+
+<!-- LAST DROP -->
+<section class="sec" id="drop">
+  <div class="wrap">
+    <div class="head reveal">
+      <div>
+        <div class="kicker eyebrow">Nouveautés</div>
+        <h2 class="h2">Last <em>drop</em></h2>
+        <p class="sub">Les dernières sorties du label, à regarder directement ici.</p>
+      </div>
+    </div>
+    <div class="drop">
+      <div class="player" id="dPlayer"></div>
+      <div class="dlist" id="dList" role="list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section class="sec" id="events">
+  <div class="wrap">
+    <div class="head reveal">
+      <div>
+        <div class="kicker eyebrow">Live</div>
+        <h2 class="h2">Prochains <em>events</em></h2>
+        <p class="sub">Concerts, DJ sets et soirées où retrouver le label.</p>
+      </div>
+    </div>
+    <div class="evlist" id="evList"></div>
+  </div>
+</section>
+
+<!-- ROSTER -->
+<section class="sec" id="artistes">
+  <div class="wrap">
+    <div class="head reveal">
+      <div>
+        <div class="kicker eyebrow">Le roster</div>
+        <h2 class="h2 caps">ARTISTES</h2>
+        <p class="sub">Artistes, DJs et beatmakers · 8 membres</p>
+      </div>
+    </div>
+    <div class="rtools">
+      <div class="tabs" id="rTabs" role="group" aria-label="Filtrer les membres">
+        <button class="rtab" type="button" data-f="all" aria-pressed="true">Tous</button>
+        <button class="rtab" type="button" data-f="Artistes" aria-pressed="false">Artistes</button>
+        <button class="rtab" type="button" data-f="DJs" aria-pressed="false">DJs</button>
+        <button class="rtab" type="button" data-f="Beatmakers" aria-pressed="false">Beatmakers</button>
+      </div>
+      <button class="rnd" id="rRnd" type="button">Au hasard ↯</button>
+    </div>
+    <div class="racc roster" id="rAcc"></div>
+  </div>
+</section>
+
+<!-- ARCHIVES -->
+<section class="sec" id="archives" aria-label="Memories">
+  <div class="wrap">
+    <div class="archive__head reveal">
+      <h2 class="h2 caps">MEMORIES</h2>
+      <span class="archive__count" id="archiveCount"></span>
+    </div>
+    <div class="archive__grid" id="archiveGrid"></div>
+  </div>
+</section>
+
+<!-- CHIFFRES -->
+<section class="sec" id="chiffres">
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat reveal"><b data-n="8">8</b><span>Membres</span></div>
+      <div class="stat reveal"><b data-n="4">4</b><span>Artistes</span></div>
+      <div class="stat reveal"><b data-n="2">2</b><span>DJs</span></div>
+      <div class="stat reveal"><b data-n="2">2</b><span>Beatmakers</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="c-in">
+    <div class="wrap">
+      <div class="cta-b reveal">
+        <h2 class="h2">Un projet, une <em>date</em>, un message ?</h2>
+        <form class="cform" id="cform" novalidate>
+          <div class="frow">
+            <label class="fld"><span>Nom, prénom ou enseigne</span><input id="fName" name="name" type="text" autocomplete="name" placeholder="Ex. Léa Martin ou Café du Flon" required></label>
+            <label class="fld"><span>E-mail</span><input id="fMail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="ton@email.com" required></label>
+          </div>
+          <div class="frow one">
+            <label class="fld"><span>Type de demande</span>
+              <select id="fType" name="type" required>
+                <option value="" disabled selected>Choisir…</option>
+                <option>Booking / date</option>
+                <option>Collaboration</option>
+                <option>Presse / interview</option>
+                <option>Merch</option>
+                <option>Rejoindre le label</option>
+                <option>Autre</option>
+              </select>
+            </label>
+          </div>
+          <label class="fld"><span>Message</span><textarea id="fMsg" name="msg" rows="4" placeholder="Quelques mots pour nous dire de quoi il s'agit." required></textarea></label>
+          <div class="factions">
+            <button class="btn btn-solid ring" id="fSend" type="submit">Envoyer le message</button>
+          </div>
+          <p class="fstatus" id="fStatus" role="status"></p>
+          <p class="fnote">Contacte-nous aussi directement : <a class="ig" href="https://www.instagram.com/303recordsofficiel/" target="_blank" rel="noopener">Instagram @303recordsofficiel ↗</a></p>
+        </form>
+      </div>
+      <div class="foot">
+        <div class="soc">
+          <a href="https://www.youtube.com/@303Recordswrl" target="_blank" rel="noopener">YouTube</a>
+          <span title="Boutique à venir">Merch</span>
+        </div>
+        <div class="avail"><i></i>Ouvert aux collaborations</div>
+        <div class="copyright">© 2026 303Records · Swiss independent label</div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<div class="viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-roledescription="carrousel" aria-label="Photos Memories">
+  <div class="glow glow--top"></div>
+  <div class="glow glow--bottom"></div>
+  <div class="stage" id="vstage"></div>
+  <div class="lens lens--l"></div>
+  <div class="lens lens--r"></div>
+  <button class="vbtn vclose" id="vClose" type="button" aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="vbtn vprev" id="vPrev" type="button" aria-label="Photo précédente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button class="vbtn vnext" id="vNext" type="button" aria-label="Photo suivante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+  <div class="vcounter" id="vCounter" aria-live="polite"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function(){
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasG=typeof window.gsap!=='undefined';
+  document.documentElement.classList.add('js');
+  var $=function(s){return document.querySelector(s)},$$=function(s){return [].slice.call(document.querySelectorAll(s))};
+
+  /* ----- Loader : se joue à chaque ouverture, seulement quand la page est réellement visible ----- */
+  var loader=$('#loader'),w=$('#lWord'),c=$('#lCount'),bar=$('#lBar'),words=['Swiss','Independent','Label'];
+  var run=0,wt=null;
+  try{history.scrollRestoration='manual'}catch(e){}
+  var hv=document.getElementById('heroVid');
+  function playHero(){try{hv.currentTime=0;var p=hv.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+  function finishLoad(){loader.classList.add('done');document.body.classList.remove('is-loading');playHero();heroIn();}
+  function intro(){
+    if(reduce){loader.hidden=true;return;}
+    loader.hidden=false;document.documentElement.classList.remove('intro-seen');
+    var id=++run,wi=0,fin=false;clearInterval(wt);
+    scrollTo({top:0,behavior:'instant'});
+    loader.classList.remove('done');document.body.classList.add('is-loading');
+    try{hv.pause();hv.currentTime=0}catch(e){}
+    w.textContent=words[0];c.textContent='000';bar.style.transform='scaleX(0)';
+    if(hasG){gsap.set('.name-reveal,.blur-in',{opacity:0});gsap.fromTo('#lTop',{y:-20,opacity:0},{y:0,opacity:1,duration:.8,ease:'power3.out'});}
+    loader.classList.remove('logo-in');
+    wt=setInterval(function(){
+      if(wi>=words.length-1){clearInterval(wt);return;}
+      w.classList.add('out');
+      setTimeout(function(){wi=wi+1;w.textContent=words[wi];w.classList.remove('out');w.classList.add('in');
+        requestAnimationFrame(function(){requestAnimationFrame(function(){w.classList.remove('in')})});},350);
+    },900);
+    var t0=performance.now(),D=2700;
+    (function tick(n){
+      if(id!==run)return;
+      var p=Math.min(1,Math.max(0,(n-t0)/D));
+      var cnt=Math.round(p*302);c.textContent=String(cnt).padStart(3,'0');if(p>=1&&!loader.classList.contains('logo-in'))loader.classList.add('logo-in');bar.style.transform='scaleX('+p+')';
+      if(p<1)requestAnimationFrame(tick);else if(!fin){fin=true;clearInterval(wt);setTimeout(function(){if(id===run)finishLoad()},1500);}
+    })(t0);
+  }
+  /* démarre quand l'onglet est visible (sinon l'intro « se joue » en arrière-plan sans qu'on la voie) */
+  function startWhenVisible(){
+    if(document.visibilityState==='visible'){intro();return;}
+    document.addEventListener('visibilitychange',function v(){if(document.visibilityState==='visible'){document.removeEventListener('visibilitychange',v);intro();}});
+  }
+  if(reduce||document.documentElement.classList.contains('intro-seen')){loader.hidden=true;document.body.classList.remove('is-loading');try{var r0=hv.play();if(r0&&r0.catch)r0.catch(function(){})}catch(e){}heroIn();} else startWhenVisible();
+  /* page restaurée depuis le cache du navigateur (retour arrière) : on rejoue */
+  addEventListener('pageshow',function(e){if(e.persisted&&!reduce)intro();});
+  /* clic sur le logo 303 : rejoue l'intro, pratique pour une démo */
+  $('.logo').addEventListener('click',function(e){if(reduce)return;e.preventDefault();intro();});
+
+  /* ----- Hero : entrée GSAP ----- */
+  function heroIn(){
+    if(!hasG||reduce)return;
+    var tl=gsap.timeline({defaults:{ease:'power3.out'}});
+    tl.fromTo('.name-reveal',{opacity:0,y:50},{opacity:1,y:0,duration:1.2,delay:.1})
+      .fromTo('.blur-in',{opacity:0,filter:'blur(10px)',y:20},{opacity:1,filter:'blur(0px)',y:0,duration:1,stagger:.1},.3);
+  }
+
+  /* ----- Rôles qui tournent ----- */
+  var roles=['artistes','DJs','beatmakers','producteurs'],ri=0,role=$('#role');
+  if(role&&!reduce) setInterval(function(){
+    ri=(ri+1)%roles.length;var n=role.cloneNode();n.textContent=roles[ri];role.replaceWith(n);role=n;
+  },2000);
+
+  /* ----- Nav : ombre + lien actif ----- */
+  var pill=$('#pill');
+  var lastY=scrollY,navEl=document.querySelector('.nav');
+  addEventListener('scroll',function(){var y=scrollY;pill.classList.toggle('scrolled',y>100);
+    if(y<80||y<lastY-4)navEl.classList.remove('nav-hide');else if(y>lastY+4)navEl.classList.add('nav-hide');lastY=y;},{passive:true});
+  var links=$$('.nav-link');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;var id=e.target.id;
+      if(id==='sorties')id='artistes';if(id==='chiffres'||id==='contact')id='archives';
+      links.forEach(function(a){a.classList.toggle('active',a.dataset.s===id)})})},{rootMargin:'-45% 0px -50% 0px'});
+    ['top','artistes','archives','chiffres','contact'].forEach(function(i){io.observe(document.getElementById(i))});
+
+    /* apparitions */
+    var ro=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target);
+      var b=e.target.querySelector&&e.target.querySelector('b[data-n]');if(b)count(b);}})},{rootMargin:'0px 0px -100px 0px'});
+    $$('.reveal').forEach(function(el,i){el.style.transitionDelay=((i%4)*80)+'ms';ro.observe(el)});
+  } else $$('.reveal').forEach(function(el){el.classList.add('on')});
+
+  function count(b){if(reduce)return;var n=+b.dataset.n,s=null;
+    (function st(t){if(s===null)s=t;var p=Math.min(1,(t-s)/1100),e=1-Math.pow(1-p,3);b.textContent=Math.round(n*e);if(p<1)requestAnimationFrame(st)})(performance.now());}
+
+  if(reduce)$$('video').forEach(function(v){v.pause()});
+
+  /* ----- Formulaire : envoi direct depuis le site (FormSubmit, vers 303records.contact@gmail.com) ----- */
+  var TO='303records.contact@gmail.com',ENDPOINT='https://formsubmit.co/ajax/'+TO,cf=$('#cform'),fs=$('#fStatus'),send=$('#fSend');
+  var IDS=['#fName','#fMail','#fType','#fMsg'];
+  function status(t,cls){fs.textContent=t;fs.className='fstatus'+(cls?' '+cls:'');}
+  function check(){var ok=true;IDS.forEach(function(id){var el=$(id),v=el.value.trim(),bad=!v||(id==='#fMail'&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));el.parentNode.classList.toggle('err',bad);if(bad)ok=false;});
+    if(!ok)status('Remplis tous les champs avec une adresse e-mail valide.','ko');return ok;}
+  cf.addEventListener('submit',function(e){
+    e.preventDefault();if(!check())return;
+    var n=$('#fName').value.trim(),m=$('#fMail').value.trim(),t=$('#fType').value,msg=$('#fMsg').value.trim();
+    send.disabled=true;send.textContent='Envoi…';status('');
+    fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({_subject:'['+t+'] '+n+' · site 303Records',_template:'table',_captcha:'false',_replyto:m,'Nom / enseigne':n,'E-mail':m,'Type de demande':t,'Message':msg})})
+    .then(function(r){return r.json().catch(function(){return{}}).then(function(j){if(!r.ok||String(j.success)==='false')throw new Error(j.message||'HTTP '+r.status);return j;})})
+    .then(function(){cf.reset();status('Merci, ton message a bien été envoyé. On te répond dès que possible.','ok');})
+    .catch(function(){status('L’envoi n’a pas fonctionné. Réessaie dans un instant ou écris-nous sur Instagram @303recordsofficiel.','ko');})
+    .then(function(){send.disabled=false;send.textContent='Envoyer le message';});
+  });
+  IDS.forEach(function(id){$(id).addEventListener('input',function(){this.parentNode.classList.remove('err');if(fs.classList.contains('ko'))status('');});$(id).addEventListener('change',function(){this.parentNode.classList.remove('err')});});
+})();
+</script>
+<script>
+(() => {
+  /* Memories : grille mosaïque + visionneuse carrousel 3D. caption = date affichée seulement dans la visionneuse. */
+  const PHOTOS = [
+    { type: 'image', src: 'media/tuccibi-small.jpg', w: 675, h: 900, caption: '02.10.2026', alt: 'Tuccibi, shooting SBFT' },
+    { type: 'image', src: 'media/memories/1-13.jpg', w: 900, h: 506, caption: '04.08.2025', alt: 'Shooting, mur en briques de verre' },
+    { type: 'image', src: 'media/memories/image-jpg.jpg', w: 506, h: 900, caption: '', alt: 'Shooting, mur de briques blanches' },
+    { type: 'video', src: 'media/concert.mp4', poster: 'media/concert-poster.jpg', w: 1600, h: 900, caption: '', alt: 'Concert, vidéo' },
+    { type: 'image', src: 'media/live-djs.jpg', w: 900, h: 1200, caption: '', alt: 'DJs 303 sur scène' },
+    { type: 'image', src: 'media/memories/img-0038.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0039.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0040.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0041.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0042.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0043.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0044.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0045.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0046.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0047.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0048.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0049.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0050.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0051.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/memories/img-0052.jpg', w: 675, h: 900, caption: '18.10.2026', alt: 'Shooting 303 en duo' },
+    { type: 'image', src: 'media/fourteen-small.jpg', w: 700, h: 1050, caption: '', alt: 'Fourteen en t-shirt 303' }
+  ];
+  const TURN = 950, DRAG_TURN = 650;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const grid = document.getElementById('archiveGrid');
+  const viewer = document.getElementById('viewer');
+  const stage = document.getElementById('vstage');
+  const counter = document.getElementById('vCounter');
+  const N = PHOTOS.length;
+  document.getElementById('archiveCount').textContent = N + (N > 1 ? ' souvenirs' : ' souvenir');
+
+  const isVid = p => p.type === 'video';
+  function makeVideo(p) {
+    const v = document.createElement('video');
+    v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata';
+    v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+    if (p.poster) v.poster = p.poster;
+    v.src = p.src;
+    return v;
+  }
+  const safePlay = v => { const r = v.play(); if (r && r.catch) r.catch(() => {}); };
+
+  PHOTOS.forEach((p, i) => {
+    const b = document.createElement('button');
+    b.className = 'thumb' + (isVid(p) ? ' thumb--video' : '');
+    b.type = 'button';
+    b.setAttribute('aria-label', 'Ouvrir ' + (isVid(p) ? 'la vidéo ' : 'la photo ') + (i + 1) + (p.alt ? ' : ' + p.alt : ''));
+    let img;
+    if (isVid(p)) {
+      img = makeVideo(p);
+      if (!reduced) { img.autoplay = true; img.addEventListener('canplay', () => safePlay(img), { once: true }); safePlay(img); }
+    } else {
+      img = new Image(); img.src = p.src; img.alt = p.alt || ''; img.loading = 'lazy'; img.decoding = 'async';
+    }
+    b.appendChild(img);
+    b.addEventListener('click', () => open(i, b));
+    grid.appendChild(b);
+  });
+  /* affichage compact : 3 rangées visibles, le reste avec "Voir plus" */
+  var thumbs=[].slice.call(grid.children),shown=0,moreWrap=document.createElement('div');
+  moreWrap.className='amore';moreWrap.innerHTML='<button class="pbtn" type="button" id="aMore"></button><button class="pbtn" type="button" id="aLess">Réduire</button>';
+  grid.parentNode.appendChild(moreWrap);
+  function perRow(){var c=getComputedStyle(grid).gridTemplateColumns.split(' ').length;return c||4;}
+  function applyShown(){thumbs.forEach(function(t,i){t.classList.toggle('more-hid',i>=shown)});var left=thumbs.length-shown;
+    document.getElementById('aMore').hidden=left<=0;document.getElementById('aMore').textContent='Voir plus ('+left+')';
+    document.getElementById('aLess').hidden=shown<=perRow()*3;moreWrap.hidden=thumbs.length<=perRow()*3;}
+  function reset(){shown=Math.min(thumbs.length,perRow()*3);applyShown();}
+  document.getElementById('aMore').addEventListener('click',function(){shown=Math.min(thumbs.length,shown+perRow()*3);applyShown();});
+  document.getElementById('aLess').addEventListener('click',function(){reset();var a=document.getElementById('archives');scrollTo({top:a.getBoundingClientRect().top+scrollY-80,behavior:reduced?'auto':'smooth'});});
+  reset();var rzT;addEventListener('resize',function(){clearTimeout(rzT);rzT=setTimeout(function(){var keep=shown>perRow()*3;if(!keep)reset();else applyShown();},200)});
+
+  const cards = []; let built = false;
+  function build() {
+    if (built) return; built = true;
+    PHOTOS.forEach(p => {
+      const c = document.createElement('figure'); c.className = 'vcard';
+      const card = { el: c, ar: p.w && p.h ? p.w / p.h : 0.8, glow: [120, 130, 160], video: null };
+      let media;
+      if (isVid(p)) { media = makeVideo(p); media.preload = 'auto'; card.video = media; }
+      else {
+        media = new Image(); media.decoding = 'async'; media.alt = p.alt || ''; media.draggable = false;
+        media.addEventListener('load', () => { card.glow = averageColor(media) || card.glow; render(); });
+        media.src = p.src;
+      }
+      c.append(media);
+      if (p.caption) { const cap = document.createElement('figcaption'); cap.className = 'vcard__cap'; cap.textContent = p.caption; c.append(cap); }
+      stage.appendChild(c); cards.push(card);
+    });
+  }
+  function averageColor(img) {
+    try {
+      const cv = document.createElement('canvas'); cv.width = cv.height = 8;
+      const ctx = cv.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, 8, 8);
+      const d = ctx.getImageData(0, 0, 8, 8).data; let r = 0, g = 0, b = 0;
+      for (let k = 0; k < d.length; k += 4) { r += d[k]; g += d[k + 1]; b += d[k + 2]; }
+      const n = d.length / 4, boost = v => Math.min(255, Math.round(v / n * 1.15 + 20));
+      return [boost(r), boost(g), boost(b)];
+    } catch (e) { return null; }
+  }
+
+  let pos = 0, base = 300, xSide = 400;
+  function measure() {
+    if (!cards.length) return;
+    const W = viewer.clientWidth || innerWidth, Hs = viewer.clientHeight || innerHeight, small = W <= 720;
+    const H = Math.min(Hs * (small ? 0.62 : 0.7), 760), maxW = W * (small ? 0.76 : 0.52);
+    cards.forEach(c => {
+      let h = H, w = H * c.ar; if (w > maxW) { w = maxW; h = w / c.ar; }
+      c.w = w; Object.assign(c.el.style, { width: w + 'px', height: h + 'px', marginLeft: -w / 2 + 'px', marginTop: -h / 2 + 'px' });
+    });
+    base = Math.min(H * 0.8, maxW);
+    xSide = Math.max(base * 1.05, Math.min(W / 2, base * 2.2));
+    stage.style.perspective = base * 1.4 + 'px';
+    render();
+  }
+  let playing = -1;
+  function syncVideos(active) {
+    if (active === playing) return; playing = active;
+    cards.forEach((c, i) => { if (!c.video) return; if (i === active && !viewer.hidden) safePlay(c.video); else c.video.pause(); });
+  }
+  function render() {
+    if (!cards.length) return;
+    const half = N / 2, fade = Math.max(0.01, Math.min(1 / 1.6, half - 1));
+    let nearest = 0, best = Infinity;
+    cards.forEach((c, i) => {
+      const p = (((i - pos + half) % N) + N) % N - half, a = Math.abs(p), s = p < 0 ? -1 : 1;
+      let x, z, r, o;
+      if (a <= 1) { x = s * xSide * a; z = -0.325 * base * a; r = s * 125 * (1 - Math.pow(1 - a, 1.6)); o = 1; }
+      else { const t = a - 1; x = s * xSide * (1 + t * 1.6); z = -0.325 * base; r = s * (125 + 55 * t); o = Math.max(0, 1 - t / fade); }
+      const st = c.el.style;
+      st.transform = `translate3d(${x}px,0,${z}px) rotateY(${r}deg)`; st.opacity = o;
+      st.zIndex = 10 - Math.round(a * 4); st.visibility = o === 0 ? 'hidden' : 'visible';
+      c.el.setAttribute('aria-hidden', a > 0.5 ? 'true' : 'false');
+      if (a < best) { best = a; nearest = i; }
+    });
+    const f = ((pos % N) + N) % N, i0 = Math.floor(f) % N, i1 = (i0 + 1) % N, k = f - Math.floor(f);
+    const g0 = cards[i0].glow, g1 = cards[i1].glow;
+    viewer.style.setProperty('--glow', g0.map((v, j) => Math.round(v + (g1[j] - v) * k)).join(','));
+    counter.textContent = (nearest + 1) + ' / ' + N;
+    syncVideos(best < 0.35 ? nearest : -1);
+  }
+  let raf = 0, target = null;
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  function stopAnim() { cancelAnimationFrame(raf); raf = 0; target = null; }
+  function go(to, dur = TURN) {
+    stopAnim();
+    if (reduced) { pos = to; render(); return; }
+    const from = pos, t0 = performance.now(); target = to;
+    const tick = now => { const t = Math.min(1, (now - t0) / dur); pos = from + (to - from) * ease(t); render();
+      if (t < 1) raf = requestAnimationFrame(tick); else { pos = to; raf = 0; target = null; render(); } };
+    raf = requestAnimationFrame(tick);
+  }
+  function step(d) { go(Math.round(target ?? pos) + d); }
+  let opener = null;
+  function open(i, fromEl) {
+    build(); opener = fromEl || null; stopAnim(); pos = i; playing = -1;
+    viewer.hidden = false; document.body.classList.add('viewer-open'); measure();
+    requestAnimationFrame(() => viewer.classList.add('is-open'));
+    document.getElementById('vClose').focus({ preventScroll: true });
+  }
+  function close() {
+    stopAnim(); cards.forEach(c => c.video && c.video.pause()); playing = -1;
+    viewer.classList.remove('is-open'); document.body.classList.remove('viewer-open');
+    setTimeout(() => { viewer.hidden = true; }, reduced ? 0 : 350);
+    if (opener) opener.focus({ preventScroll: true });
+  }
+  const stop = e => e.stopPropagation();
+  ['pointerdown', 'pointerup'].forEach(ev => ['vClose', 'vPrev', 'vNext'].forEach(id => document.getElementById(id).addEventListener(ev, stop)));
+  document.getElementById('vClose').addEventListener('click', close);
+  document.getElementById('vPrev').addEventListener('click', () => step(-1));
+  document.getElementById('vNext').addEventListener('click', () => step(1));
+  let down = false, dragging = false, sx = 0, sPos = 0, sT = 0, pid = null;
+  viewer.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    stopAnim(); down = true; dragging = false; sx = e.clientX; sPos = pos; sT = performance.now(); pid = e.pointerId;
+  });
+  viewer.addEventListener('pointermove', e => {
+    if (!down) return; const dx = e.clientX - sx;
+    if (!dragging && Math.abs(dx) > 6) { dragging = true; viewer.classList.add('is-dragging'); try { viewer.setPointerCapture(pid); } catch (_) {} }
+    if (dragging) { pos = sPos - dx / (xSide * 0.9); render(); }
+  });
+  const end = e => {
+    if (!down) return; down = false; viewer.classList.remove('is-dragging');
+    if (!dragging) {
+      const rect = viewer.getBoundingClientRect(), x = e.clientX - rect.left;
+      if (x < rect.width * 0.3) step(-1); else if (x > rect.width * 0.7) step(1); else go(Math.round(pos), 300);
+      return;
+    }
+    dragging = false;
+    const el = Math.max(1, performance.now() - sT), v = (pos - sPos) / el, startSlot = Math.round(sPos);
+    let t = Math.round(pos + v * 220);
+    if (t === startSlot && Math.abs(pos - sPos) > 0.18) t = startSlot + Math.sign(pos - sPos);
+    go(t, DRAG_TURN);
+  };
+  viewer.addEventListener('pointerup', end); viewer.addEventListener('pointercancel', end);
+  document.addEventListener('keydown', e => {
+    if (viewer.hidden) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); e.stopImmediatePropagation(); step(1); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); e.stopImmediatePropagation(); step(-1); }
+    else if (e.key === 'Escape') close();
+  }, true);
+  addEventListener('resize', () => { if (!viewer.hidden) measure(); });
+})();
+</script>
+<script>
+(function(){
+  var M=[{"name": "Tuccibi", "role": "Artiste", "group": "Artistes", "bio": ["Originaire de Lausanne, Tuccibi est un jeune artiste suisse de 24 ans qui a posé ses valises à Paris en février 2025 pour concrétiser son rêve : faire briller la Suisse sur la carte du rap francophone.", "Lancé dans le rap depuis mars 2025, il s'impose déjà comme une voix singulière de la nouvelle génération. Son timbre éraillé et son flow atypique puisent leur force dans un mélange explosif entre la trap d'Atlanta et les sonorités congolaises, hommage vibrant à ses origines."], "latest": {"label": "Dernier album", "title": "SBFT: Summer Before French Thug", "place": null, "url": "https://open.spotify.com/intl-fr/album/3TS8vICUnru4YijmKFKL2w", "urlLabel": "Écouter sur Spotify"}, "links": {"spotify": "https://open.spotify.com/intl-fr/artist/2PyySNleW0jxqxUTblxddy", "instagram": "https://www.instagram.com/303tuccibi", "tiktok": "https://www.tiktok.com/@tuccibi4pl"}, "photo": "media/tuccibi.jpg", "pos": "center 22%"}, {"name": "Mec2", "photo": "media/mec2.jpg", "pos": "center 12%", "role": "Artiste", "group": "Artistes", "bio": ["Originaire de Lausanne, Mec2 s'impose comme un artiste porté par une identité forte et une vision personnelle de la trap. Inspiré par la musique d'Atlanta, avec des références comme Mexikodro, Gucci Mane, Migos et Young Nudy, il mêle sonorités profondes, rythmes percutants et textes authentiques pour créer un univers à la fois moderne et original.", "À travers ses morceaux, Mec2 raconte ses ambitions et sa réalité, avec une énergie brute qui reflète les influences de la scène trap américaine tout en affirmant sa propre signature. Entre les punchlines accrocheuses et les productions puissantes, il construit progressivement un style reconnaissable et singulier.", "Avec cette volonté de repousser les limites et de rester fidèle à son identité, Mec2 entend faire découvrir une trap originale, ambitieuse et connectée à son époque."], "latest": {"label": "Dernier single", "title": "LOCKIN", "place": null, "url": "https://open.spotify.com/intl-fr/album/3m0Q64XLHFl5R7nxqyGkOh", "urlLabel": "Écouter sur Spotify"}, "links": {"spotify": "https://open.spotify.com/intl-fr/artist/1epQuohgkRRMlQ1a5WjTBS", "instagram": "https://www.instagram.com/303mec2_/", "tiktok": "https://www.tiktok.com/@mec2_"}}, {"name": "Draaks", "photo": "media/draaks.jpg", "pos": "center 30%", "role": "Artiste", "group": "Artistes", "bio": ["Issu du label indépendant suisse 303Records, Drtwooa, Dior ou 2A, appelé communément Draaks, est un mélomane à l'écriture directe, aux flows marqués et aux gimmicks reconnaissables, comme son fameux « TWOOA! » accompagné de son signe avec l'index et le majeur. En 2 ans, il a créé son propre style : « Melodior ».", "Un cocktail de mélo mélancolique, grandement inspiré des sonorités d'église puisées dans son enfance, de mélo joviale inspirée de la musique congolaise et africaine, et de mélo sombre inspirée de la trap.", "Il commence à écrire et à enregistrer en studio en 2022, mais ce n'est qu'en 2023, lorsqu'il sent que sa musique devient de plus en plus qualitative et cohérente, qu'il dévoile son premier freestyle, « 90TECH »."], "latest": {"label": "Dernier album", "title": "M3LOTRAAP", "place": null, "url": "https://open.spotify.com/intl-fr/album/3c7SKUEk1wWjfGlp06Y2L3", "urlLabel": "Écouter sur Spotify"}, "links": {"spotify": "https://open.spotify.com/intl-fr/artist/3KB5ILUWg3gseqp50F0npq", "instagram": "https://www.instagram.com/303draaks/", "tiktok": "https://www.tiktok.com/@303draaks"}}, {"name": "Krimson", "photo": "media/krimson.jpg", "pos": "center 8%", "role": "Artiste", "group": "Artistes", "bio": null, "latest": null, "links": {"spotify": "https://open.spotify.com/intl-fr/artist/1UZYIQwnGtZR8EeurglYEM", "instagram": "https://www.instagram.com/303krimson/", "tiktok": "https://www.tiktok.com/@krimson303"}}, {"name": "Fourteen", "role": "DJ", "group": "DJs", "bio": ["DJ basé dans les hauts de Lausanne, Fourteen, c'est une énergie brute derrière les platines.", "Premier DJ officiel de 303 Records et actif avec MTLRECORDS, il construit un univers sonore sombre et immersif, entre baile funk, trap, gqom, afrobeat, afro électronique et edits tranchants.", "Ses sets sont pensés comme des voyages : ça installe une ambiance, puis ça monte, ça frappe, ça te garde dedans jusqu'à la fin. Il joue avec les émotions du public et mélange les styles sans perdre sa direction.", "Son style : BIGFLOW. Une dérive contrôlée, un mouvement où l'énergie te guide, où chaque montée te transforme, et où, si tu vas assez loin, tu finis toujours par capter quelque chose."], "latest": {"label": "Dernier set", "title": "Wrld Festival", "place": "Yverdon-les-Bains, Suisse", "url": "https://on.soundcloud.com/aO9k5Fw0MVZ4U74F2M", "urlLabel": "Écouter sur SoundCloud"}, "links": {"soundcloud": "https://on.soundcloud.com/aO9k5Fw0MVZ4U74F2M", "instagram": "https://www.instagram.com/303fourteen/", "tiktok": "https://www.tiktok.com/@303fourteen"}, "noSpotify": true, "photo": "media/fourteen.jpg", "pos": "center 18%"}, {"name": "Oussboy", "role": "DJ", "group": "DJs", "bio": null, "latest": null, "links": {"instagram": "https://www.instagram.com/ousboyz_dj/"}}, {"name": "Fantomasss", "photo": "media/fantomasss.jpg", "pos": "center 30%", "role": "Beatmaker", "group": "Beatmakers", "bio": null, "latest": null, "links": {"instagram": "https://www.instagram.com/303fantomasss/", "tiktok": "https://www.tiktok.com/@303fantomasss"}}, {"name": "Beatmaker 2", "role": "Beatmaker", "group": "Beatmakers", "bio": null, "latest": null, "links": {}, "pending": true}], cur=0, $=function(s){return document.querySelector(s)};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function lk(u,l){return u?'<a class="pbtn" href="'+esc(u)+'" target="_blank" rel="noopener">'+l+'</a>':''}
+  var acc=$('#rAcc'),h='';
+  ['Artistes','DJs','Beatmakers'].forEach(function(g){
+    var list=M.map(function(m,i){return[m,i]}).filter(function(x){return x[0].group===g});
+    h+='<div class="rgrp" data-g="'+g+'"><h3>'+g+' <i>'+list.length+'</i></h3>';
+    list.forEach(function(x){var m=x[0],i=x[1],L=m.links||{};
+      var bio=m.bio?m.bio.map(function(p){return'<p>'+esc(p)+'</p>'}).join(''):'<p style="color:var(--muted)">Bio à compléter : quelques lignes sur le style, le parcours et l’univers de '+esc(m.name)+'.</p>';
+      var ph=m.photo?'<div class="rph"><img src="'+m.photo+'" alt="Portrait de '+esc(m.name)+'" loading="lazy" style="object-position:'+(m.pos||'center')+'"></div>':'<div class="rph" role="img" aria-label="Photo de '+esc(m.name)+' à ajouter"><span>Photo à ajouter</span></div>';
+      var rel=m.latest?'<div class="rrel"><div><span class="meta">'+esc(m.latest.label)+'</span><strong>'+esc(m.latest.title)+'</strong>'+(m.latest.place?'<span class="place">'+esc(m.latest.place)+'</span>':'')+'<a class="pbtn solid'+(/spotify/i.test(m.latest.url)?' spotify':'')+'" href="'+esc(m.latest.url)+'" target="_blank" rel="noopener">'+esc(m.latest.urlLabel)+' ↗</a></div></div>':'';
+      var links=lk(L.spotify,'Spotify')+lk(L.soundcloud,'SoundCloud')+lk(L.instagram,'Instagram')+lk(L.tiktok,'TikTok')+(m.pending?'<span class="pbtn dis" aria-disabled="true">Liens à ajouter</span>':'');
+      h+='<div class="ritem" id="m-'+i+'"><button class="rhead" type="button" aria-expanded="false" aria-controls="mb-'+i+'"><b>'+esc(m.name)+'</b><em>'+esc(m.role)+'</em><span class="rplus" aria-hidden="true"></span></button><div class="rbody" id="mb-'+i+'"><div class="rin">'+ph+'<div class="rbio">'+bio+'</div>'+rel+'<div class="lk">'+links+'</div></div></div></div>';
+    });
+    h+='</div>';
+  });
+  acc.innerHTML=h;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function setOpen(it,open){
+    var b=it.querySelector('.rbody'),btn=it.querySelector('.rhead');
+    if(open===it.classList.contains('open'))return;
+    btn.setAttribute('aria-expanded',String(open));
+    if(reduce){it.classList.toggle('open',open);return}
+    if(open){it.classList.add('open');var hh=b.scrollHeight;b.style.height='0px';b.offsetHeight;b.style.height=hh+'px';
+      b.addEventListener('transitionend',function f(){b.removeEventListener('transitionend',f);if(it.classList.contains('open'))b.style.height='';});}
+    else{b.style.height=b.scrollHeight+'px';b.offsetHeight;it.classList.remove('open');b.style.height='0px';
+      b.addEventListener('transitionend',function f(){b.removeEventListener('transitionend',f);b.style.height='';});}
+  }
+  acc.addEventListener('click',function(e){var btn=e.target.closest('.rhead');if(!btn)return;var it=btn.parentNode;setOpen(it,!it.classList.contains('open'))});
+  var first=$('#m-0');if(first){first.classList.add('open');first.querySelector('.rhead').setAttribute('aria-expanded','true')}
+  $('#rTabs').addEventListener('click',function(e){var t=e.target.closest('.rtab');if(!t)return;var f=t.dataset.f;
+    document.querySelectorAll('.rtab').forEach(function(b){b.setAttribute('aria-pressed',String(b===t))});
+    document.querySelectorAll('.rgrp').forEach(function(g){g.classList.toggle('hid',f!=='all'&&g.dataset.g!==f)});
+    acc.classList.toggle('one',f!=='all');});
+  $('#rRnd').addEventListener('click',function(){
+    var vis=[].slice.call(document.querySelectorAll('.rgrp:not(.hid) .ritem'));if(!vis.length)return;
+    var pick=vis[Math.floor(Math.random()*vis.length)];
+    vis.forEach(function(it){if(it!==pick)setOpen(it,false)});setOpen(pick,true);
+    setTimeout(function(){var y=pick.getBoundingClientRect().top+scrollY-100;scrollTo({top:y,behavior:reduce?'auto':'smooth'})},reduce?0:420);
+  });
+})();
+</script>
+<script>
+(function(){
+  /* ===== LAST DROP : ajoute l'identifiant YouTube du clip dans "yt" (ex. https://youtu.be/XXXX → "XXXX") ===== */
+  var DROPS=[
+    {title:'SBFT : Summer Before French Thug',artist:'Tuccibi',type:'Album',yt:'',thumb:'media/sbft-cover.jpg',pos:'center 30%',listen:'https://open.spotify.com/intl-fr/album/3TS8vICUnru4YijmKFKL2w',platform:'Spotify'},
+    {title:'LOCKIN',artist:'Mec2',type:'Single',yt:'',thumb:'media/mec2.jpg',pos:'center 22%',listen:'https://open.spotify.com/intl-fr/album/3m0Q64XLHFl5R7nxqyGkOh',platform:'Spotify'},
+    {title:'M3LOTRAAP',artist:'Draaks',type:'Album',yt:'',thumb:'media/draaks.jpg',pos:'center 30%',listen:'https://open.spotify.com/intl-fr/album/3c7SKUEk1wWjfGlp06Y2L3',platform:'Spotify'}
+  ];
+  /* ===== PROCHAINS EVENTS : date AAAA-MM-JJ. Les lignes "exemple:true" sont des exemples à remplacer. ===== */
+  var EVENTS=[
+    {date:'2026-11-14',title:'303 Night',place:'Lieu à confirmer, Lausanne',lineup:'Tuccibi · Mec2 · Fourteen',url:'',exemple:true},
+    {date:'2026-12-05',title:'Showcase Grand-Vennes',place:'Centre socioculturel de Grand-Vennes, Lausanne',lineup:'Draaks · Krimson · Oussboy',url:'',exemple:true}
+  ];
+  var $=function(s){return document.querySelector(s)};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  var PLAY='<svg viewBox="0 0 24 24" fill="#0a0a0a"><path d="M7 4.5v15l13-7.5z"/></svg>';
+  function render(i){
+    var d=DROPS[i],v;
+    var pst=d.thumb?'<img class="poster" src="'+d.thumb+'" alt="" style="object-position:'+(d.pos||'center')+'">':'';
+    if(d.yt){v='<div class="vid">'+pst+'<div class="vph"><div><button class="vplay" type="button" id="dPlay" aria-label="Lire le clip '+esc(d.title)+'">'+PLAY+'</button><p>Clip officiel</p></div></div></div>';}
+    else{v='<div class="vid">'+pst+'<div class="vph"><div><button class="vplay" type="button" disabled aria-label="Clip à venir" style="opacity:.45;cursor:default">'+PLAY+'</button><p>Clip YouTube à ajouter</p></div></div></div>';}
+    var acts=''+(d.yt?'<a class="pbtn" href="https://www.youtube.com/watch?v='+esc(d.yt)+'" target="_blank" rel="noopener">YouTube ↗</a>':'');
+    $('#dPlayer').innerHTML=v+'<div class="pinfo"><div><small>'+esc(d.type)+' · '+esc(d.artist)+'</small><strong>'+esc(d.title)+'</strong></div><div class="acts">'+acts+'</div></div>';
+    var b=$('#dPlay');if(b)b.onclick=function(){b.closest('.vid').innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+encodeURIComponent(d.yt)+'?autoplay=1&rel=0" title="'+esc(d.title)+'" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>'};
+    document.querySelectorAll('.ditem').forEach(function(x){x.setAttribute('aria-current',String(+x.dataset.i===i))});
+  }
+  $('#dList').innerHTML=DROPS.map(function(d,i){return'<button class="ditem" type="button" role="listitem" data-i="'+i+'" aria-current="false"><span class="thumb16" aria-hidden="true"><img src="'+d.thumb+'" alt="" loading="lazy" style="object-position:'+(d.pos||'center')+'"><em>'+esc(d.type)+'</em></span><span><b>'+esc(d.title)+'</b><small>'+esc(d.artist)+'</small></span></button>'}).join('');
+  $('#dList').addEventListener('click',function(e){var b=e.target.closest('.ditem');if(b)render(+b.dataset.i)});
+  render(0);
+  var M=['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+  var today=new Date();today.setHours(0,0,0,0);
+  var up=EVENTS.filter(function(e){return new Date(e.date+'T00:00:00')>=today}).sort(function(a,b){return a.date<b.date?-1:1});
+  $('#evList').innerHTML=up.length?up.map(function(e){var dt=new Date(e.date+'T00:00:00');
+    return'<div class="ev"><div class="d">'+dt.getDate()+'<small>'+M[dt.getMonth()]+' '+dt.getFullYear()+'</small></div><div><b>'+esc(e.title)+(e.exemple?'<span class="tag">Exemple</span>':'')+'</b><span>'+esc(e.place)+(e.lineup?' · '+esc(e.lineup):'')+'</span></div>'+(e.url?'<a class="pbtn solid" href="'+esc(e.url)+'" target="_blank" rel="noopener">Billets ↗</a>':'<span class="pbtn dis" aria-disabled="true">Infos bientôt</span>')+'</div>'}).join(''):'<p class="ev-empty">Pas de date annoncée pour le moment. Écris-nous pour un booking.</p>';
+  var mb=document.getElementById('merchBtn');if(mb&&mb.getAttribute('aria-disabled')==='true')mb.addEventListener('click',function(e){e.preventDefault()});
+})();
+</script>
+
+</body>
+</html>
